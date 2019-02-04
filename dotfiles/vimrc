@@ -1,0 +1,69 @@
+"if !has('nvim')
+  " Basic aut indentation
+  set autoindent
+  " Atomatically reload mofied files
+  set autoread
+  " Don't scan included files for keyword completion (SLOW)
+  set complete-=i
+  " Always use UTF-8. Always!
+  set encoding=utf-8
+  " Enable mouse
+  set mouse=a
+  " Fast scrolling
+  set ttyfast
+"endif
+
+
+set nocompatible
+
+" row numbers
+set number
+
+" highlight search
+set hlsearch
+
+" highlight parenthesis
+set showmatch
+
+" show color display
+syntax on
+
+" indent settings based on filetype
+filetype plugin indent on
+
+" tab = 4 spaces
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+" don't redraw while executing macros
+set lazyredraw
+
+" Paint background black within 80 characters and grey outside
+let &colorcolumn=join(range(81,999),",")
+highlight ColorColumn ctermbg=235
+
+" Hilight whitespace with green color
+set list!
+set listchars=tab:.\ ,trail:-
+highlight WhiteSpace ctermfg=2
+match WhiteSpace /\s\+$\| \+\ze\t\|\t/
+
+" Highlight a column in csv text.
+" :Csv 1    " highlight first column
+" :Csv 12   " highlight twelfth column
+" :Csv 0    " switch off highlight
+function! CSVH(colnr)
+  if a:colnr > 1
+    let n = a:colnr - 1
+    execute 'match Keyword /^\([^,]*,\)\{'.n.'}\zs[^,]*/'
+    execute 'normal! 0'.n.'f,'
+  elseif a:colnr == 1
+    match Keyword /^[^,]*/
+    normal! 0
+  else
+    match
+  endif
+endfunction
+command! -nargs=1 Csv :call CSVH(<args>)
+
